@@ -50,7 +50,7 @@ func main() {
 			}
 		}
 		if strings.Contains(*object.Key, ".xls") || strings.Contains(*object.Key, ".xlsx") {
-			cmd := exec.Command("unoconv", "-f", "pdf", "-d", "s", "/temp/temp-folder/"+*object.Key)
+			cmd := exec.Command("unoconv", "-f", "pdf", "/temp/temp-folder/"+*object.Key)
 			if err := cmd.Run(); err != nil {
 				fmt.Println("here", err)
 				panic(err)
