@@ -3,6 +3,7 @@ package main
 import (
 	nats "github.com/nats-io/nats.go"
 	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 func main() {
@@ -37,5 +38,8 @@ func main() {
 		if req.Arg == "convert" {
 			log.Infof("Received request with no: %d and argument: %s", req.ID, req.Arg)
 		}
+
+		time.Sleep(time.Second * 2)
+
 	}
 }
