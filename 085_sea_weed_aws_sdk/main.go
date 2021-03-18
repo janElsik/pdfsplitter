@@ -40,7 +40,6 @@ func main() {
 	// Upload image data to the weed file service
 
 	_ = api.SplitFile("/home/jelsik/Downloads/temp-folder/gobook.pdf", "/home/jelsik/Downloads/temp-folder/", 1, nil)
-	//TODO fix sorting bug
 
 	files, _ := ioutil.ReadDir("/home/jelsik/Downloads/temp-folder/")
 	i := 1

@@ -11,8 +11,9 @@ func main() {
 	client := weedo.NewClient("10.0.0.27:9333")
 	//TODO na githubu je funkce, jak si rovnou načíst náhledy
 	//TODO ponořit se do fid
-	file, _ := os.Open("/home/jelsik/Downloads/temp-folder/gobook.pdf")
-	fid, _, err := client.AssignUpload("/testfolder/gobook.pdf", "application/pdf", file)
+	//TODO fix sorting bug
+	file, _ := os.Open("/home/jelsik/Downloads/temp-folder/a.jpg")
+	fid, _, err := client.AssignUpload("a.jpg", "image/jpeg", file)
 	fmt.Println(fid)
 	if err != nil {
 		fmt.Println(err)
@@ -26,16 +27,8 @@ func main() {
 	fmt.Println(purl)
 	fmt.Println(url)
 
-	location, err := client.GetUrls(fid)
-
 	if err != nil {
 		fmt.Println(err)
-	}
-
-	fmt.Println(location)
-
-	for locPart := range location {
-		fmt.Println(locPart)
 	}
 
 }
