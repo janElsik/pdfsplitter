@@ -1,0 +1,11 @@
+version: '3.5'
+services:
+  go-server:
+    build:
+      args:
+        - ENV=prod
+      context: .
+    image: pdfsplitter_with_unoconv
+    container_name: pdfsplitter_with_unoconv
+   # ports:
+    #  - "4445:9000"
