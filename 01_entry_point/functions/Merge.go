@@ -11,10 +11,20 @@ import (
 )
 
 func Merge(tempFolderName string, fileLinks []string) string {
-	//1. Download files to temp folder with randomly generated name+a number
-	fileCount := 1
+	// Download files to temp folder with randomly generated name+a number
+	fileCount := 0
 	for _, tempString := range fileLinks {
-		err := helpers.DownloadFile(tempFolderName+strconv.Itoa(fileCount)+".pdf", tempString)
+		var newFileCount string
+		if fileCount < 10 {
+			newFileCount = "000" + strconv.Itoa(fileCount)
+		} else if fileCount < 100 {
+			newFileCount = "00" + strconv.Itoa(fileCount)
+		} else if fileCount < 1000 {
+			newFileCount = "0" + strconv.Itoa(fileCount)
+		} else {
+			newFileCount = strconv.Itoa(fileCount)
+		}
+		err := helpers.DownloadFile(tempFolderName+newFileCount+".pdf", tempString)
 
 		if err != nil {
 			fmt.Printf("Downloading error with %s : %s\n", tempString, err)
@@ -24,7 +34,7 @@ func Merge(tempFolderName string, fileLinks []string) string {
 		fileCount++
 	}
 
-	//2. Merge files into one
+	// Merge files into one
 	var sliceToMerge []string
 	downloadedFilesSlice, _ := ioutil.ReadDir(tempFolderName)
 	for _, downloadedFile := range downloadedFilesSlice {
@@ -35,7 +45,7 @@ func Merge(tempFolderName string, fileLinks []string) string {
 		fmt.Printf("error with merging file: %s \n", err)
 	}
 
-	//3. Upload files to SeaweedFS
+	// Upload files to SeaweedFS
 
 	file, err := os.Open(tempFolderName + "merged.pdf")
 	if err != nil {
@@ -51,7 +61,7 @@ func Merge(tempFolderName string, fileLinks []string) string {
 	if err != nil {
 		fmt.Println("error with getting url from seaweed:", err)
 	}
-	//4. Erase everything in the folder, including merged file
+	// Erase everything in the folder, including merged file
 	err = os.RemoveAll(tempFolderName)
 
 	if err != nil {
@@ -63,7 +73,7 @@ func Merge(tempFolderName string, fileLinks []string) string {
 		fmt.Println("error with removing the temp folder:", err)
 	}
 
-	//5. Return link to the merged file
+	// Return link to the merged file
 	return publicUrl
 
 }

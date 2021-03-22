@@ -2,6 +2,7 @@ package functions
 
 import (
 	"fmt"
+	"github.com/ginuerzh/weedo"
 	"github.com/nats-io/nats.go"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -12,26 +13,43 @@ import (
 	"sync"
 )
 
-func Convert(inputFileSlice []string, tempFolderName string, tempFileName string, ec *nats.EncodedConn, command <-chan string, wg *sync.WaitGroup) []string {
+func Convert(inputFileSlice []string, tempFolderName string, tempFileName string, command <-chan string, wg *sync.WaitGroup) []string {
+	nc, err := nats.Connect(nats.DefaultURL)
+	if err != nil {
+		panic(err)
+	}
+
+	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
+	if err != nil {
+		panic(err)
+	}
+	defer ec.Close()
+	log.Info("Connected to NATS and ready to send messages")
+
 	defer wg.Done()
 	type Request struct {
-		Id         int
-		Filename   string
-		Identifier string
+		ConvertToPDF     string
+		Id               int
+		Filename         string
+		Identifier       string
+		Tempfoldername   string
+		Originalfilename string
 	}
+
+	// initialize SeaWeedFS
+	client := weedo.NewClient("10.0.0.27:9333")
 
 	UniqueString := helpers.RandomStringGenerator(12)
 
 	linkMap := make(map[int]string)
 
 	personChanSend := make(chan *Request)
-	ec.BindSendChan("request_subject", personChanSend)
+	ec.BindSendChan("request_converting_to_pdf", personChanSend)
 
 	i := 1
 	for _, inputFileName := range inputFileSlice {
 
 		count := "0000" + strconv.Itoa(i)
-		//TODO if the number of documents to merge si higher than 9, add check to amend the count variable -- ex. 00001, 00020, etc.
 		tempStringSlice := strings.SplitAfter(inputFileName, ".")
 		tempFileSuffix := "." + tempStringSlice[len(tempStringSlice)-1]
 
@@ -53,11 +71,21 @@ func Convert(inputFileSlice []string, tempFolderName string, tempFileName string
 		if err != nil {
 			fmt.Println(err)
 		}
+		file, _ := os.Open(tempFolderName + tempFileName + count + tempFileSuffix)
+		fid, _, err := client.AssignUpload(file.Name(), "", file)
 
-		// check - if suffix is not .pdf, converts the file to pdf
+		if err != nil {
+			fmt.Println("error with uploading the file:", err)
+		}
 
-		req := Request{Id: i, Filename: tempFolderName + tempFileName + count + tempFileSuffix, Identifier: UniqueString}
-		log.Infof("Sending request id: %d with arg: %s", req.Id, req.Filename, req.Identifier)
+		purl, _, err := client.GetUrl(fid)
+
+		if err != nil {
+			fmt.Println("error with getting Public url:", err)
+		}
+
+		req := Request{Id: i, Filename: purl, Identifier: UniqueString, Tempfoldername: tempFolderName, Originalfilename: tempFileName + count + tempFileSuffix}
+		log.Infof("Sending request id: %d with arg: %s", req.Id, req.Filename)
 		personChanSend <- &req
 
 		i++
@@ -65,13 +93,14 @@ func Convert(inputFileSlice []string, tempFolderName string, tempFileName string
 	}
 
 	type Response struct {
-		ID         int
-		Identifier string
-		Fid        string
+		ID                 int
+		Identifier         string
+		Fid                string
+		Originalidentifier string
 	}
 
 	personChanRecv := make(chan *Response)
-	_, _ = ec.BindRecvChan("request_subject", personChanRecv)
+	_, _ = ec.BindRecvChan("response_converted_to_pdf", personChanRecv)
 
 	myString := strconv.Itoa(len(inputFileSlice)) + UniqueString
 	fmt.Println(myString)
@@ -81,9 +110,11 @@ func Convert(inputFileSlice []string, tempFolderName string, tempFileName string
 		deq := <-personChanRecv
 
 		//time.Sleep(time.Second*2)
-		fmt.Println(deq.Identifier)
-		fmt.Println(deq.Fid)
-		linkMap[deq.ID] = deq.Fid
+		if deq.Originalidentifier == UniqueString {
+			fmt.Println(deq.Identifier)
+			fmt.Println(deq.Fid)
+			linkMap[deq.ID] = deq.Fid
+		}
 
 		if len(linkMap) == len(inputFileSlice) && linkMap[len(linkMap)] != "" {
 
