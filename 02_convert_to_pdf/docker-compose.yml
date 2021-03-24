@@ -5,7 +5,5 @@ services:
       args:
         - ENV=prod
       context: .
-    image: pdfsplitter_with_unoconv
-    container_name: pdfsplitter_with_unoconv
-   # ports:
-    #  - "4445:9000"
+    image: convert2pdf
+    container_name: convert2pdf

@@ -31,7 +31,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup) ([]
 		Identifier string
 	}
 	identifier := helpers.RandomStringGenerator(12)
-	nc, err := nats.Connect(nats.DefaultURL)
+	nc, err := nats.Connect("10.0.0.27:4222")
 	if err != nil {
 		panic(err)
 	}
@@ -89,6 +89,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup) ([]
 
 	// 4b. upload to SeaWeedFS and return links to a single slice
 	client := weedo.NewClient("10.0.0.27:9333")
+
 	var splitLinkList []string
 
 	files, err = ioutil.ReadDir(tempFolderName)

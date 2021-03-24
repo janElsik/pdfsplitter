@@ -17,7 +17,7 @@ func main() {
 	// initialize SeaWeedFS
 	client := weedo.NewClient("10.0.0.27:9333")
 
-	nc, err := nats.Connect(nats.DefaultURL)
+	nc, err := nats.Connect("10.0.0.27:4222")
 	if err != nil {
 		panic(err)
 	}
@@ -64,13 +64,27 @@ func main() {
 		if req.Filename == "" {
 			continue
 		}
+		err = os.Mkdir("/temp", 0777)
+		if err != nil {
+			fmt.Println("1 error with making directory", err)
+		}
+		err = os.Mkdir(req.Tempfoldername, 0777)
+		if err != nil {
+			fmt.Println("2 error with making directory", err)
+		}
+		//newLink := req.Filename
+		//newLink = strings.ReplaceAll(newLink,"172.21.0.3","0.0.0.0")
 
-		os.Mkdir(req.Tempfoldername, 0777)
-
-		//log.Infof("Received request with no: %d and argument: %s", req.Id, req.Filename)
-
-		_ = helpers.DownloadFile(req.Tempfoldername+req.Originalfilename, req.Filename)
+		log.Infof("Received request with no: %d and argument: %s", req.Id, req.Filename)
+		err = helpers.DownloadFile(req.Tempfoldername+req.Originalfilename, req.Filename)
+		if err != nil {
+			fmt.Println("Downloading file:", err)
+		}
+		fmt.Println("file downloaded")
 		fileName := req.Tempfoldername + req.Originalfilename
+		fmt.Println("fileNamecreated")
+
+		//TODO office files convert through gotenberg
 		if strings.HasSuffix(fileName, "pdf") == false {
 			cmd := exec.Command("unoconv", "-f", "pdf", fileName)
 

@@ -14,7 +14,7 @@ import (
 )
 
 func Convert(inputFileSlice []string, tempFolderName string, tempFileName string, command <-chan string, wg *sync.WaitGroup) []string {
-	nc, err := nats.Connect(nats.DefaultURL)
+	nc, err := nats.Connect("10.0.0.27:4222")
 	if err != nil {
 		panic(err)
 	}
@@ -38,6 +38,7 @@ func Convert(inputFileSlice []string, tempFolderName string, tempFileName string
 
 	// initialize SeaWeedFS
 	client := weedo.NewClient("10.0.0.27:9333")
+	client.Master()
 
 	UniqueString := helpers.RandomStringGenerator(12)
 
