@@ -21,7 +21,7 @@ func main() {
 
 	client := weedo.NewClient("10.0.0.27:9333")
 
-	nc, err := nats.Connect(nats.DefaultURL)
+	nc, err := nats.Connect("10.0.0.27:4222")
 	if err != nil {
 		fmt.Println(err)
 
@@ -66,13 +66,20 @@ func main() {
 		if req.Id == 0 && req.Filelink == "" && req.Foldername == "" {
 			continue
 		}
+		err = os.Mkdir("/temp", 0777)
+		if err != nil {
+			//	fmt.Println(err)
+		}
 
 		err = os.Mkdir(req.Foldername, 0777)
 		if err != nil {
 			//	fmt.Println(err)
 		}
 
-		_ = helpers.DownloadFile(req.Foldername+strconv.Itoa(req.Id)+".pdf", req.Filelink)
+		err = helpers.DownloadFile(req.Foldername+strconv.Itoa(req.Id)+".pdf", req.Filelink)
+		if err != nil {
+			fmt.Println("Downloading file", err)
+		}
 		originalFileName := req.Foldername + strconv.Itoa(req.Id) + ".pdf"
 		pngFileName := strings.ReplaceAll(originalFileName, ".pdf", ".png")
 

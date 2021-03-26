@@ -5,6 +5,7 @@ import (
 	"github.com/ginuerzh/weedo"
 	"github.com/nats-io/nats.go"
 	log "github.com/sirupsen/logrus"
+	"github.com/thecodingmachine/gotenberg-go-client/v7"
 	"os"
 	"os/exec"
 	"pdfsplitter_cez_preprod/02_convert_to_pdf/helpers"
@@ -15,7 +16,8 @@ import (
 
 func main() {
 	// initialize SeaWeedFS
-	client := weedo.NewClient("10.0.0.27:9333")
+	weedoClient := weedo.NewClient("10.0.0.27:9333")
+	gotenbergClient := &gotenberg.Client{Hostname: "http://10.0.0.27:3000"}
 
 	nc, err := nats.Connect("10.0.0.27:4222")
 	if err != nil {
@@ -66,31 +68,55 @@ func main() {
 		}
 		err = os.Mkdir("/temp", 0777)
 		if err != nil {
-			fmt.Println("1 error with making directory", err)
+			//fmt.Println("1 error with making directory", err)
 		}
 		err = os.Mkdir(req.Tempfoldername, 0777)
 		if err != nil {
-			fmt.Println("2 error with making directory", err)
+			//fmt.Println("2 error with making directory", err)
 		}
 		//newLink := req.Filename
 		//newLink = strings.ReplaceAll(newLink,"172.21.0.3","0.0.0.0")
 
-		log.Infof("Received request with no: %d and argument: %s", req.Id, req.Filename)
+		//log.Infof("Received request with no: %d and argument: %s", req.Id, req.Filename)
 		err = helpers.DownloadFile(req.Tempfoldername+req.Originalfilename, req.Filename)
 		if err != nil {
 			fmt.Println("Downloading file:", err)
 		}
-		fmt.Println("file downloaded")
 		fileName := req.Tempfoldername + req.Originalfilename
-		fmt.Println("fileNamecreated")
 
 		//TODO office files convert through gotenberg
 		if strings.HasSuffix(fileName, "pdf") == false {
-			cmd := exec.Command("unoconv", "-f", "pdf", fileName)
 
-			if err := cmd.Run(); err != nil {
-				fmt.Printf("error with converting to pdf: %v \n", err)
-				fmt.Println(fileName)
+			/////////////////////////////////////////////////////////////////////////////////////
+
+			if strings.HasSuffix(fileName, ".docx") == true ||
+				strings.HasSuffix(fileName, ".doc") == true ||
+				strings.HasSuffix(fileName, ".ods") == true ||
+				strings.HasSuffix(fileName, ".odt") == true ||
+				strings.HasSuffix(fileName, ".rtf") == true ||
+				strings.HasSuffix(fileName, ".xls") == true ||
+				strings.HasSuffix(fileName, ".xlsx") == true ||
+				strings.HasSuffix(fileName, ".txt") == true {
+				doc, err := gotenberg.NewDocumentFromPath(fileName, fileName)
+				if err != nil {
+					fmt.Println(fileName, err)
+				}
+				fileNameSlice := strings.Split(fileName, ".")
+				suffixOld := fileNameSlice[len(fileNameSlice)-1]
+				req := gotenberg.NewOfficeRequest(doc)
+				dest := strings.ReplaceAll(fileName, "."+suffixOld, ".pdf")
+				err = gotenbergClient.Store(req, dest)
+				if err != nil {
+					fmt.Println(fileName, err)
+				}
+			} else {
+
+				cmd := exec.Command("unoconv", "-f", "pdf", fileName)
+
+				if err := cmd.Run(); err != nil {
+					fmt.Printf("error with converting to pdf: %v \n", err)
+					fmt.Println(fileName)
+				}
 			}
 		}
 
@@ -101,13 +127,13 @@ func main() {
 		stringToUpload := strings.Join(pdfFileName, "")
 
 		file, _ := os.Open(stringToUpload)
-		fid, _, err := client.AssignUpload(pdfFileName[len(pdfFileName)-2]+pdfFileName[len(pdfFileName)-1], "application/pdf", file)
+		fid, _, err := weedoClient.AssignUpload(pdfFileName[len(pdfFileName)-2]+pdfFileName[len(pdfFileName)-1], "application/pdf", file)
 		//fmt.Println(fid)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		purl, _, err := client.GetUrl(fid)
+		purl, _, err := weedoClient.GetUrl(fid)
 
 		if err != nil {
 			fmt.Println(err)
