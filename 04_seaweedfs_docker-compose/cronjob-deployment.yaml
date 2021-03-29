@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: cronjob
+  name: cronjob
+  namespace: jelsik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: cronjob
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: cronjob
+    spec:
+      containers:
+        - args:
+            - cronjob
+          env:
+            - name: CRON_SCHEDULE
+              value: '*/2 * * * * *'
+            - name: WEED_MASTER
+              value: master:9333
+          image: chrislusf/seaweedfs
+          name: cronjob
+          resources: {}
+      restartPolicy: Always
+status: {}

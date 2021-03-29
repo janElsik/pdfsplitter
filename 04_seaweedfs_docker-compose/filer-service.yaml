@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: filer
+  name: filer
+  namespace: jelsik
+spec:
+  ports:
+    - name: "8888"
+      port: 8888
+      targetPort: 8888
+    - name: "18888"
+      port: 18888
+      targetPort: 18888
+    - name: "9326"
+      port: 9326
+      targetPort: 9326
+  selector:
+    io.kompose.service: filer
+status:
+  loadBalancer: {}
