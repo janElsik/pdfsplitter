@@ -1,9 +1,0 @@
-version: '3.5'
-services:
-  go-server:
-    build:
-      args:
-        - ENV=prod
-      context: .
-    image: convert2pdf
-    container_name: convert2pdf

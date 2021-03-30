@@ -11,7 +11,7 @@ import (
 )
 
 func Merge(tempFolderName string, fileLinks []string) string {
-	// Download files to temp folder with randomly generated name+a number
+	// Download files to temp folder with randomly generated name and a number
 	fileCount := 0
 	for _, tempString := range fileLinks {
 		var newFileCount string
@@ -45,8 +45,7 @@ func Merge(tempFolderName string, fileLinks []string) string {
 		fmt.Printf("error with merging file: %s \n", err)
 	}
 
-	// Upload files to SeaweedFS
-
+	// Upload files to server
 	file, err := os.Open(tempFolderName + "merged.pdf")
 	if err != nil {
 		fmt.Println("error with opening file for uploading:", err)
@@ -57,6 +56,7 @@ func Merge(tempFolderName string, fileLinks []string) string {
 		fmt.Println("error with uploading file to seaweed:", err)
 	}
 
+	// get url
 	publicUrl, _, err := client.GetUrl(fid)
 	if err != nil {
 		fmt.Println("error with getting url from seaweed:", err)

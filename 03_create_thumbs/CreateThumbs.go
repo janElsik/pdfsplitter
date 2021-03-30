@@ -17,7 +17,7 @@ const thumbX1 = "200"
 
 func main() {
 
-	//1. create logistics network (e.g. connect to NATS and seaweed)
+	//connect to messaging server and to the file server
 
 	client := weedo.NewClient("10.0.0.27:9333")
 
@@ -36,7 +36,7 @@ func main() {
 
 	log.Info("Create Thumbs: Conected to NATS and ready to receive messages")
 
-	//2 create struct to receive incoming JSON
+	// create struct to receive incoming messages
 
 	type ThumbCreateRequest struct {
 		Maxnumber    int
@@ -47,20 +47,20 @@ func main() {
 		Identifier   string
 	}
 
-	//3. create struct to send outcoming JSON
+	//create struct to send messages
 
 	type ThumbList struct {
 		ThumbLink  string
 		Id         int
 		Identifier string
 	}
+	// enter listening queue and for loop
 	personChanRecv := make(chan *ThumbCreateRequest)
 	_, _ = ec.BindRecvQueueChan("request_thumb_creation", "request_thumb_creation_queue", personChanRecv)
 	personChanSend := make(chan *ThumbList)
 	_ = ec.BindSendChan("create_thumb_response", personChanSend)
 
-	//4. enter listening queue and for loop
-
+	// receive request, download file, create thumbnail, upload and send response with url
 	for {
 		req := <-personChanRecv
 		if req.Id == 0 && req.Filelink == "" && req.Foldername == "" {
@@ -115,15 +115,5 @@ func main() {
 		fmt.Println("id", req.Id, "sent")
 
 	}
-
-	//5. download the file to tempfolder
-
-	//6. create thumb for the file
-
-	//7. upload the thumb and get link
-
-	//8. remove local file
-
-	//9. send the link to thumb back (also with received id) via nats
 
 }

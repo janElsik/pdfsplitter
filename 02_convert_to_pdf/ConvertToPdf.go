@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	// initialize SeaWeedFS
+	//connect to messaging server, to the file server and to conversion container
 	weedoClient := weedo.NewClient("10.0.0.27:9333")
 	gotenbergClient := &gotenberg.Client{Hostname: "http://10.0.0.27:3000"}
 
@@ -32,8 +32,7 @@ func main() {
 
 	log.Info("Convert to pdf: Conected to NATS and ready to receive messages")
 
-	// Make sure this type and its properties are exported
-	// so the serializer doesn't bork
+	// create struct for received messages
 	type Request struct {
 		ConvertToPDF     string
 		Id               int
@@ -42,10 +41,11 @@ func main() {
 		Tempfoldername   string
 		Originalfilename string
 	}
+	//create channel for received messages and join queue
 	personChanRecv := make(chan *Request)
 	_, _ = ec.BindRecvQueueChan("request_converting_to_pdf", "request_converting_to_pdf_queue", personChanRecv)
 
-	// Response struct - it is needed to listen to the incoming messages
+	// create struct for outgoing messages (response)
 	type Response struct {
 		ID                 int
 		Identifier         string
@@ -53,7 +53,7 @@ func main() {
 		Originalidentifier string
 	}
 
-	// create channel to listen  for the messages
+	// create channel for sending messages
 	personChanSend := make(chan *Response)
 	ec.BindSendChan("response_converted_to_pdf", personChanSend)
 	s := ""
@@ -66,6 +66,7 @@ func main() {
 		if req.Filename == "" {
 			continue
 		}
+		// make sure that directory exists, if not, create it
 		err = os.Mkdir("/temp", 0777)
 		if err != nil {
 			//fmt.Println("1 error with making directory", err)
@@ -78,17 +79,19 @@ func main() {
 		//newLink = strings.ReplaceAll(newLink,"172.21.0.3","0.0.0.0")
 
 		//log.Infof("Received request with no: %d and argument: %s", req.Id, req.Filename)
+
+		// download file
 		err = helpers.DownloadFile(req.Tempfoldername+req.Originalfilename, req.Filename)
 		if err != nil {
 			fmt.Println("Downloading file:", err)
 		}
 		fileName := req.Tempfoldername + req.Originalfilename
 
-		//TODO office files convert through gotenberg
+		// check the file suffix - if pdf, do not convert
 		if strings.HasSuffix(fileName, "pdf") == false {
 
-			/////////////////////////////////////////////////////////////////////////////////////
-
+			// check the file suffix, if it is office doc, send for conversion to container service (gotenberg)
+			// if not, convert using unoconv
 			if strings.HasSuffix(fileName, ".docx") == true ||
 				strings.HasSuffix(fileName, ".doc") == true ||
 				strings.HasSuffix(fileName, ".ods") == true ||
@@ -121,7 +124,7 @@ func main() {
 		}
 
 		// in the messages, the received file name is with original suffix (ex. ".jpg" etc)
-		// this here makes sure that we upload the correct converted file, with ".pdf" suffix
+		// this makes sure that we upload the correct converted file, with ".pdf" suffix
 		pdfFileName := strings.Split(fileName, ".")
 		pdfFileName[len(pdfFileName)-1] = ".pdf"
 		stringToUpload := strings.Join(pdfFileName, "")
@@ -132,7 +135,7 @@ func main() {
 		if err != nil {
 			fmt.Println(err)
 		}
-
+		// get url
 		purl, _, err := weedoClient.GetUrl(fid)
 
 		if err != nil {
@@ -145,7 +148,7 @@ func main() {
 
 		os.Remove(fileName)
 		s = strconv.Itoa(req.Id) + req.Identifier
-
+		// send response
 		deq := Response{ID: req.Id, Identifier: s, Fid: purl, Originalidentifier: req.Identifier}
 		personChanSend <- &deq
 		time.Sleep(time.Microsecond * 20)
