@@ -4,26 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ginuerzh/weedo"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"pdfsplitter_cez_preprod/01_entry_point/functions"
 	"pdfsplitter_cez_preprod/01_entry_point/helpers"
 	"sync"
 	"time"
-)
-
-const (
-	// constants with possible file types
-	InputFileName1  = "files/bmp.bmp"
-	InputFileName2  = "files/txt.txt"
-	InputFileName3  = "files/docx.docx"
-	InputFileName4  = "files/gobook.pdf"
-	InputFileName5  = "files/jpg.jpg"
-	InputFileName6  = "files/ods.ods"
-	InputFileName7  = "files/odt.odt"
-	InputFileName8  = "files/png.png"
-	InputFileName9  = "files/rtf.rtf"
-	InputFileName10 = "files/xls.xls"
-	InputFileName11 = "files/xlsx.xlsx"
 )
 
 type JSON struct {
@@ -32,25 +19,126 @@ type JSON struct {
 	ImgSrc string `json:"imgsrc"`
 }
 
-func main() {
+func setupRoutes() {
+	// functions that handle index and localhost:[port]/process
+	go http.HandleFunc("/", CallIndex)
+	go http.HandleFunc("/process", Organizer)
+	err := http.ListenAndServe(":8090", nil)
+	if err != nil {
+		fmt.Printf("error with ListenAndServe: %v \n", err)
+	}
 
-	// start to track time since start of program
-	start := time.Now()
+}
+
+func CallIndex(w http.ResponseWriter, r *http.Request) {
+
+	//write out all the logic of html index, instead of body
+	_, err := w.Write([]byte(helpers.HtmlHeader2))
+
+	if err != nil {
+		fmt.Println("Response writer:", err)
+	}
+	//write out html body
+	_, err = fmt.Fprint(w, `
+
+<form
+        enctype="multipart/form-data"
+        action="/process"
+        method="post"
+>
+	<label>split your file</label>
+    <input type="file" name="myfiles" multiple=multiple/>
+    <input type="submit" value="upload" />
+</form>
+
+
+
+</body>
+</html>
+`)
+
+	if err != nil {
+		fmt.Println("Fprint:", err)
+	}
+
+}
+
+func main() {
+	fmt.Println("program started")
+	setupRoutes()
+}
+
+func Organizer(w http.ResponseWriter, r *http.Request) {
 
 	// connection to filesystem
 	weedoClient := weedo.NewClient("10.0.0.27:9333")
+	// start to track time since start of program
+	start := time.Now()
+	_ = os.Mkdir("/temp", 0777)
 
 	// array with filepaths
-	inputFileSlice := []string{InputFileName1,
-		InputFileName2, InputFileName3, InputFileName4,
-		InputFileName5, InputFileName6, InputFileName7, InputFileName8, InputFileName9, InputFileName10, InputFileName11,
-	}
+	var inputFileSlice []string
 
 	// randomly generated string used to rename the files to unique names
 	tempFileName := helpers.RandomStringGenerator(12)
 
 	// randomly generated string used to create folder with unique name
-	tempFolderName := "/temp/" + helpers.RandomStringGenerator(12) + "/"
+	tempFolderName := "/temp/" + helpers.RandomStringGenerator(12)
+	fmt.Println("tempfoldername:", tempFolderName)
+	err := os.Mkdir(tempFolderName, 0777)
+	if err != nil {
+		fmt.Println("error with making dir")
+	}
+
+	tempFolderName = tempFolderName + "/"
+
+	// 32MB is the default used by FormFile
+	err = r.ParseMultipartForm(32 << 20)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// iterate over data from html form and save them in form of files
+	for _, fileTypeMap := range r.MultipartForm.File {
+		for _, value := range fileTypeMap {
+
+			f, err := value.Open()
+			if err != nil {
+				fmt.Println("opening value:", err)
+			}
+
+			fmt.Println(value.Filename)
+			fmt.Println(tempFolderName + value.Filename)
+			tempFile, err := ioutil.TempFile(tempFolderName, value.Filename)
+
+			if err != nil {
+				fmt.Println("temp file initializing:", err)
+			}
+			fileBytes, err := ioutil.ReadAll(f)
+			if err != nil {
+				fmt.Println("reading filebytes:", err)
+			}
+
+			_, err = tempFile.Write(fileBytes)
+
+			if err != nil {
+				fmt.Println("writing temp file:", err)
+			}
+
+			_ = os.Rename(tempFile.Name(), tempFolderName+value.Filename)
+
+			tempFile.Close()
+			_ = f.Close()
+
+		}
+	}
+
+	// read in all file names in temp dir and put them into an array
+	dirSlice, _ := os.ReadDir(tempFolderName)
+
+	for _, file := range dirSlice {
+		inputFileSlice = append(inputFileSlice, tempFolderName+file.Name())
+	}
 
 	// this block makes sure that conversion (functions.Convert) is completed before continuing with the
 	// execution of the program (pointer to wg variable)
@@ -63,7 +151,7 @@ func main() {
 
 	// conversion call on input files, returns Array with links converted documents
 	linkSlice = functions.Convert(inputFileSlice, tempFolderName, tempFileName, command, &wg)
-	err := os.RemoveAll(tempFolderName)
+	err = os.RemoveAll(tempFolderName)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -149,7 +237,7 @@ func main() {
 		fmt.Println("Getting url:", err)
 	}
 
-	err = os.Remove(tempFolderName + "jsongo.json")
+	err = os.RemoveAll(tempFolderName)
 	if err != nil {
 		fmt.Println("Removing file:", err)
 	}
@@ -157,6 +245,8 @@ func main() {
 	fmt.Println("link to JSON:", purl)
 	fmt.Println("link to merged file:", mergedFileLink)
 
+	functions.OutputBodyCreation(w, splitLinkSlice, thumbSlice)
 	elapsed := time.Since(start)
 	fmt.Println("process took:", elapsed)
+
 }

@@ -58,8 +58,10 @@ func main() {
 	ec.BindSendChan("response_converted_to_pdf", personChanSend)
 	s := ""
 	fmt.Println(s)
-
+	var GotenbergConv bool
 	for {
+
+		start := time.Now()
 		// wait for incoming messages
 
 		req := <-personChanRecv
@@ -112,6 +114,7 @@ func main() {
 				if err != nil {
 					fmt.Println(fileName, err)
 				}
+				GotenbergConv = true
 			} else {
 
 				cmd := exec.Command("unoconv", "-f", "pdf", fileName)
@@ -120,6 +123,7 @@ func main() {
 					fmt.Printf("error with converting to pdf: %v \n", err)
 					fmt.Println(fileName)
 				}
+				GotenbergConv = false
 			}
 		}
 
@@ -151,7 +155,13 @@ func main() {
 		// send response
 		deq := Response{ID: req.Id, Identifier: s, Fid: purl, Originalidentifier: req.Identifier}
 		personChanSend <- &deq
-		time.Sleep(time.Microsecond * 20)
+		elapsed := time.Since(start)
+		if GotenbergConv == true {
+			fmt.Println("Gotenberg Conversion took:", elapsed)
+		} else {
+			fmt.Println("Non Gotenberg Conversion took:", elapsed)
+		}
+		time.Sleep(time.Millisecond * 20)
 
 	}
 

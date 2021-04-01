@@ -104,7 +104,7 @@ func main() {
 		_ = os.Remove(originalFileName)
 		_ = os.Remove(pngFileName)
 
-		time.Sleep(time.Millisecond * 30)
+		time.Sleep(time.Millisecond * 20)
 
 		deq := ThumbList{
 			ThumbLink:  purl,
