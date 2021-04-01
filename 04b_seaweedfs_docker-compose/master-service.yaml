@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: jelsik
   annotations:
-    kompose.cmd: kompose convert
+    kompose.cmd: kompose --file seaweedfs-dev-compose.yml convert
     kompose.version: 1.22.0 (955b78124)
   creationTimestamp: null
   labels:
     io.kompose.service: master
   name: master
-  namespace: jelsik
 spec:
+  type: LoadBalancer
   ports:
     - name: "9333"
       port: 9333
@@ -19,4 +20,5 @@ spec:
       targetPort: 19333
   selector:
     io.kompose.service: master
-  type: LoadBalancer
+status:
+  loadBalancer: {}

@@ -16,5 +16,4 @@ spec:
       targetPort: 9090
   selector:
     io.kompose.service: prometheus
-status:
-  loadBalancer: {}
+  type: LoadBalancer

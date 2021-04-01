@@ -1,18 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: jelsik
   annotations:
-    kompose.cmd: kompose convert
+    kompose.cmd: kompose --file seaweedfs-dev-compose.yml convert
     kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
   labels:
     io.kompose.service: webdav
   name: webdav
-  namespace: jelsik
 spec:
+  type: LoadBalancer
   ports:
     - name: "7333"
       port: 7333
       targetPort: 7333
   selector:
     io.kompose.service: webdav
-  type: LoadBalancer
+  status:
+    loadBalancer: {}
