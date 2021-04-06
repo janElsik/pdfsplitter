@@ -19,9 +19,9 @@ func main() {
 
 	//connect to messaging server and to the file server
 
-	client := weedo.NewClient("10.0.0.27:9333")
+	client := weedo.NewClient("10.4.237.28:9333")
 
-	nc, err := nats.Connect("10.0.0.27:4222")
+	nc, err := nats.Connect("10.4.220.151:4222")
 	if err != nil {
 		fmt.Println(err)
 

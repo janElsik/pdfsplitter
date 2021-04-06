@@ -1,0 +1,20 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-util-convert-testing
+  namespace: jelsik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pdf-util-convert-testing
+  template:
+    metadata:
+      labels:
+        name: pdf-util-convert-testing
+    spec:
+      containers:
+        - name: application
+          image: harbor.trask.cz/pdf_split/testrepo@sha256:ccb936a7d59a7eadad1b7f09984e399b61dac23ca563c924ba5740f2628e7f43
+          imagePullPolicy: Always

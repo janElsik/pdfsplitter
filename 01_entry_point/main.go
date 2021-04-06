@@ -13,6 +13,11 @@ import (
 	"time"
 )
 
+const (
+	WeedsAddressString = "10.4.237.28:9333"
+	NatsAddressString  = "10.4.220.151:4222"
+)
+
 type JSON struct {
 	Number int    `json:"linknumber"`
 	Href   string `json:"href"`
@@ -21,8 +26,8 @@ type JSON struct {
 
 func setupRoutes() {
 	// functions that handle index and localhost:[port]/process
-	go http.HandleFunc("/", CallIndex)
-	go http.HandleFunc("/process", Organizer)
+	http.HandleFunc("/", CallIndex)
+	http.HandleFunc("/process", Organizer)
 	err := http.ListenAndServe(":8090", nil)
 	if err != nil {
 		fmt.Printf("error with ListenAndServe: %v \n", err)
@@ -71,7 +76,7 @@ func main() {
 func Organizer(w http.ResponseWriter, r *http.Request) {
 
 	// connection to filesystem
-	weedoClient := weedo.NewClient("10.0.0.27:9333")
+	weedoClient := weedo.NewClient(WeedsAddressString)
 	// start to track time since start of program
 	start := time.Now()
 	_ = os.Mkdir("/temp", 0777)
@@ -150,7 +155,7 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 	var linkSlice []string
 
 	// conversion call on input files, returns Array with links converted documents
-	linkSlice = functions.Convert(inputFileSlice, tempFolderName, tempFileName, command, &wg)
+	linkSlice = functions.Convert(inputFileSlice, tempFolderName, tempFileName, command, &wg, WeedsAddressString, NatsAddressString)
 	err = os.RemoveAll(tempFolderName)
 	if err != nil {
 		fmt.Println(err)
@@ -175,7 +180,7 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// call to merge converted files into one, returns link to merged file
-	mergedFileLink := functions.Merge(tempFolderName, linkSlice)
+	mergedFileLink := functions.Merge(tempFolderName, linkSlice, WeedsAddressString)
 
 	// prints the link to merged file
 	fmt.Println("link to merged file:", mergedFileLink)
@@ -187,7 +192,7 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 
 	// call to split the merged file into single pages, returns links to split pdfs and to thumbnails of
 	// the split pdfs
-	thumbSlice, splitLinkSlice := functions.Split(tempFolderName, mergedFileLink, &wg2)
+	thumbSlice, splitLinkSlice := functions.Split(tempFolderName, mergedFileLink, &wg2, WeedsAddressString, NatsAddressString)
 	wg2.Wait()
 
 	err = os.Mkdir(tempFolderName, 0777)

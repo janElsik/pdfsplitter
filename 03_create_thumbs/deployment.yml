@@ -1,0 +1,20 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-util-create-testing
+  namespace: jelsik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pdf-util-create-testing
+  template:
+    metadata:
+      labels:
+        name: pdf-util-create-testing
+    spec:
+      containers:
+        - name: application
+          image: harbor.trask.cz/pdf_split/testrepo@sha256:8ef35676be6f4de0eac6af4dff70985bb5c4af3d2fd0049afce1c616ac1b1ad9
+          imagePullPolicy: Always

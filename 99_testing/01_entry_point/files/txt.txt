@@ -1,0 +1,38 @@
+
+
+Mají technologie, peníze a ambice. A taky novou krev v čele. Českou společnost Trask, dodavatele inovací do bank, průmyslové výroby či zdravotnictví, vede od ledna Pavel Riegger. Muž, který dříve v New Yorku pracoval i pro investiční banky Goldman Sachs či JPMorgan, či ve vedení poradenské firmy EY, má nastartovat novou éru firmy, která v tuzemsku dává práci až osmi stovkám technologických vývojářů, ekonomů či konzultantů.
+"Cílem je zdvojnásobit tržby během dvou let. Dává­me dohromady sedmiletý plán, který nás má přivést mezi evropskou špičku v technologiích, které užíváme," říká v rozhovoru pro Ekonom Pavel Riegger. Firma Trask v loňském fiskálním roce utržila 1,2 miliardy korun.
+Máte ambiciózní plán. To je poptávka po
+
+ vašich řešeních tak velká?
+Nové technologie postupují hodně rychle a my máme velké klienty z řad bank, pojišťoven, autoprůmyslu, energetiky nebo v poslední době i ze zdravotnictví. Zájem rychle stoupá, protože ti, kteří investovali do digitálních technologií, rostou rychleji. Z našich dat pak také jednoznačně plyne, že firmy, které investují do digitalizace a modernizace, zároveň lépe dbají na optimalizaci a stlačení vlastních nákladů. Jsou mnohem profitabilnější.
+Co všechno pro firmy děláte?
+Tento článek patří do placené sekce.
+Pro vás jej odemknul někdo, kdo má předplatné.
+
+Pokud budete předplatitelem, budete moci stejným způsobem odemykat placené články i pro své přátele.
+A získáte i řadu dalších výhod.
+
+Naše systémy umí třeba predikovat spotřebu energií nebo číst data z mamografu, na základě kterých algoritmus a umělá inteligence odhalí rakovinu prsu. To je velice průlomové. Díky kamerám, které snímají výrobní proces, můžeme předvídat problémy i při pásové produkci. Celý proces zdigitalizujeme. Odhalíme, která součástka potřebuje promazat, která vyměnit. Když vám vypadne výrobní pás a pak teprve sháníte díl, přicházíte o peníze.
+Banky patří mezi vaše klíčové zákazníky. Proč právě ony?
+Chodí jim totiž obrovské množství různých požadavků, jejichž vyřizování zabere spoustu času zaměstnanců, což je drahé. Prostor pro automatizaci a díky tomu prostor pro úspory, ale i zrychlení procesů nebo eliminaci chyb je tak velký.
+Pavel Riegger (44)
+Nový šéf technologické a konzultační společnosti Trask. Dříve pracoval v New Yorku, nejprve na českém konzulátu, později v poradenské společnosti Arthur Andersen či v investiční bance Goldman Sachs. Na místo CEO Trasku přišel letos v lednu po šestnácti letech na vedoucích pozicích v poradenské společnosti EY. Jako vedoucí partner zde vedl konzultační divizi i oddělení poradenství pro střední a východní Evropu.
+Můžete uvést příklad konkrétního řešení pro banku?
+Pro ČSOB dodáváme několik komponent, které řeší poptávky od notářů. Ti pošlou do banky požadavek, ale pokaždé v jiné formě. Požadavek může být na různé věci, jednou notář řeší dědictví, jindy zase exekuci nebo rozvod. Dodáváme proto řešení, které text přečte a podle obsahu ho vyřídí − robot si zjistí potřebná data a napíše odpověď. Nazýváme to Natural Language Processing, kalibrovali jsme to na český jazyk. Dokument v PDF formátu se tak bez zásahu člověka pošle zpět k notáři.
+Zrovna jsem dělal prohlášení k dani z příjmů. Tohle neumíte?
+Umíme. Náš Tax Assistant automatizuje vyplnění daně z příjmů, včetně podpisu, který umíme digitalizovat. Je to řešení na pár kliknutí myší. Zaměstnavatelé pak nemusí pronásledovat zaměstnance a ušetří to i obrovské množství papíru.
+Jak jsme na tom v procesu digitalizace? Nezaostáváme?
+Rozhodně ne. Třeba v digitalizaci bankovnictví jsme na špici Evropy a všichni naši soused jsou za námi − s výjimkou Slovenska, které je na tom stejně. A dobře si stojíme i v dalších oblastech. Vím to, můžu porovnávat, pracoval jsem v Londýně, Nizozemsku, severských zemích, v Itálii či v Dubaji.
+A co se týče technických znalostí a dovedností v tuzemsku?
+Nezaostáváme ani tady. Když jsem ve svých předchozích zaměstnáních dělali matematické projekty, třeba ve využití dat, tak se naše technická znalost ukázala jako velmi dobrá. Rozdíly jsou v tom, co je přidaná hodnota a kde se tvoří. Když děláte něco kvalitního, ale ten finální produkt sedí v jiné zemi, přidaná hodnota je samozřejmě dodaná tam.
+Vedle technologických řešení konzultujete s vašimi klienty i ekonomické věci. Je o ně zájem?
+K technologickému řešení dodáváme i řešení byznysové. Nedodáváme jen technologie, ale zároveň máme spoustu expertů, kteří rozumí byznysu. Než se pustíme do implementace jakýchkoli postupů či řešení, v mnoha fázích je testujeme u klienta. Naprosto klíčové je zde vyškolení lidí tak, aby systém či řešení dokázali dobře ovládat. Pokud k zaučení nedojde, je to špatně.
+Firmy, které investují do digitalizace a modernizace, zároveň dbají na optimalizaci a stlačení vlastních nákladů.
+Odkud vezmete peníze na robustní expanzi firmy?
+Ve firmě se vše financuje z vlastních zdrojů, není za námi žádná nadnárodní firma. Trask byl založen před 26 lety a všichni zakladatelé v něm dodnes pracují. Šli do toho hned po škole, začínali v jednom dejvickém bytě.
+V čele firmy jste nahradil jejího spolumajitele a zakladatele Filipa Tománka. Jak k tomu došlo?
+Trask za ta léta hodně vyrostl, spoustu věcí se změnilo a Filip na tyhle změny chtěl reagovat a připravit firmu na další růst. A protože mám zkušenosti s expanzí do zahraničí, nabídnul mi pozici CEO. Chceme se společně stát celoevropskou špičkou. Filip, který převzal pozici provozního ředitele, na to firmu připravuje zevnitř − stará se o logistiku, lidské zdroje i finance.
+Strávil jste několik let v New Yorku, centru finančního světa. Jak se vám tam líbilo?
+Nejdříve jsem bydlel na Manhattanu, ale později se přestěhoval za řeku Hudson do New Jersey. Ráno jsem pak pravidelně do práce jezdil lodí, neboť kanceláře Goldman Sachs byly na protějším břehu kousek od vody. V Americe jsem si při práci v poradenské společnosti Arthur Andersen prošel i jejím zánikem, firma se neustále zmenšovala, viděl jsem to zevnitř. New York mám dodnes moc rád, na některé věci nikdy nezapomenu a v Česku jsou těžko uvěřitelné. Třeba před získáním pozice v prestižní instituci na Wall Street jsem musel projít šestnácti koly pohovorů.
+

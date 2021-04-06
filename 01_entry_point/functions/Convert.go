@@ -13,9 +13,9 @@ import (
 	"sync"
 )
 
-func Convert(inputFileSlice []string, tempFolderName string, tempFileName string, command <-chan string, wg *sync.WaitGroup) []string {
+func Convert(inputFileSlice []string, tempFolderName string, tempFileName string, command <-chan string, wg *sync.WaitGroup, WeedsAddressString string, NatsAddressString string) []string {
 	//connect to messaging server
-	nc, err := nats.Connect("10.0.0.27:4222")
+	nc, err := nats.Connect(NatsAddressString)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func Convert(inputFileSlice []string, tempFolderName string, tempFileName string
 	}
 
 	// connection to filesystem
-	client := weedo.NewClient("10.0.0.27:9333")
+	client := weedo.NewClient(WeedsAddressString)
 	client.Master()
 
 	// create that represents each particular sent files

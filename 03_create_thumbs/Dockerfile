@@ -8,10 +8,16 @@ ENV GO111MODULE=on \
     GOARCH=amd64
 
 
-
+ENV PYTHONUNBUFFERED=1
+RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools
+RUN pip install unoconv
 RUN apk update
 RUN apk add --upgrade mupdf-tools
-
+RUN apk add --upgrade libreoffice
+RUN apk add --upgrade libreoffice-lang-cs
+RUN apk add --upgrade libreoffice-writer
 
 
 
@@ -36,8 +42,8 @@ WORKDIR /dist
 RUN cp /build/main .
 
 # Export necessary port
-EXPOSE 8080
-EXPOSE 9000
+#EXPOSE 8080
+#EXPOSE 9000
 
 # Command to run when starting the container
 CMD ["/dist/main"]

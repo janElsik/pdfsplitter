@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func Merge(tempFolderName string, fileLinks []string) string {
+func Merge(tempFolderName string, fileLinks []string, WeedsAddressString string) string {
 	// Download files to temp folder with randomly generated name and a number
 	fileCount := 0
 	for _, tempString := range fileLinks {
@@ -50,7 +50,7 @@ func Merge(tempFolderName string, fileLinks []string) string {
 	if err != nil {
 		fmt.Println("error with opening file for uploading:", err)
 	}
-	client := weedo.NewClient("10.0.0.27:9333")
+	client := weedo.NewClient(WeedsAddressString)
 	fid, _, err := client.AssignUpload(tempFolderName+"merged.pdf", "application/pdf", file)
 	if err != nil {
 		fmt.Println("error with uploading file to seaweed:", err)

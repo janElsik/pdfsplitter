@@ -9,6 +9,6 @@ require (
 	github.com/nats-io/nats.go v1.10.1-0.20210228004050-ed743748acac
 	github.com/pdfcpu/pdfcpu v0.3.9
 	github.com/sirupsen/logrus v1.8.1
-	github.com/thecodingmachine/gotenberg-go-client/v7 v7.1.0 // indirect
+	github.com/stretchr/testify v1.3.0 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 )

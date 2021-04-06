@@ -16,10 +16,10 @@ import (
 
 func main() {
 	//connect to messaging server, to the file server and to conversion container
-	weedoClient := weedo.NewClient("10.0.0.27:9333")
-	gotenbergClient := &gotenberg.Client{Hostname: "http://10.0.0.27:3000"}
+	weedoClient := weedo.NewClient("10.4.237.28:9333")
+	gotenbergClient := &gotenberg.Client{Hostname: "http://10.4.244.8:100"} //gotenberg ip string needs to have http:// at start
 
-	nc, err := nats.Connect("10.0.0.27:4222")
+	nc, err := nats.Connect("10.4.220.151:4222")
 	if err != nil {
 		panic(err)
 	}

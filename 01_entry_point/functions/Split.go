@@ -14,7 +14,7 @@ import (
 	"sync"
 )
 
-func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup) ([]string, []string) {
+func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup, WeedsAddressString string, NatsAddressString string) ([]string, []string) {
 	defer wg.Done()
 
 	// create struct to receive messages
@@ -35,7 +35,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup) ([]
 
 	// identifier to be sent with request message
 	identifier := helpers.RandomStringGenerator(12)
-	nc, err := nats.Connect("10.0.0.27:4222")
+	nc, err := nats.Connect(NatsAddressString)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +92,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup) ([]
 	}
 
 	// upload to server and return links to a single Array
-	client := weedo.NewClient("10.0.0.27:9333")
+	client := weedo.NewClient(WeedsAddressString)
 
 	var splitLinkList []string
 
