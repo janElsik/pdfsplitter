@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-util-entry-testing
+  namespace: jelsik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pdf-util-entry-testing
+  template:
+    metadata:
+      labels:
+        name: pdf-util-entry-testing
+    spec:
+      containers:
+        - name: application
+          image: harbor.trask.cz/pdf_split/testrepo@sha256:6e07a2c4db9136d8bdd35c613001f70ac63b6836f50a2b89f9913e11321fb6b7
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090

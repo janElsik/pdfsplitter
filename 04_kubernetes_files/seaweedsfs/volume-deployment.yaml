@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: volume
+  name: volume
+  namespace: jelsik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: volume
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: volume
+    spec:
+      containers:
+        - args:
+            - volume
+            - -mserver=master:9333
+            - -port=8080
+            - -metricsPort=9325
+          image: chrislusf/seaweedfs
+          name: volume
+          ports:
+            - containerPort: 8080
+            - containerPort: 18080
+            - containerPort: 9325
+          resources: {}
+      restartPolicy: Always
+status: {}

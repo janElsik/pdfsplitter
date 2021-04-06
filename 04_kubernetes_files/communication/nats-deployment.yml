@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-messaging
+  namespace: jelsik
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      name: nats-messaging
+  template:
+    metadata:
+      labels:
+        name: nats-messaging
+    spec:
+      containers:
+        - name: application
+          image: harbor.trask.cz/pdf_split/testrepo@sha256:cb7d8fe216b3c3145eb9e1f08d6d124bf71c9f9d9d158cd0c76f0bbd483cc221
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4222
+            - containerPort: 8222

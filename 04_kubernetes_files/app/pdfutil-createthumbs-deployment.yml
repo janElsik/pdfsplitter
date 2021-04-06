@@ -1,0 +1,20 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-util-createthumbs-testing
+  namespace: jelsik
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      name: pdf-util-createthumbs-testing
+  template:
+    metadata:
+      labels:
+        name: pdf-util-createthumbs-testing
+    spec:
+      containers:
+        - name: application
+          image: harbor.trask.cz/pdf_split/testrepo@sha256:f1a09933ef9fd47498a61c75934e7893420c654007139cdf978daf697f6af2d6
+          imagePullPolicy: Always

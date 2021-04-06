@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-service
+  namespace: jelsik
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http1
+    port: 4222
+    targetPort: 4222
+  - name: http2
+    port: 8222
+    targetPort: 8222
+  selector:
+    name: nats-messaging

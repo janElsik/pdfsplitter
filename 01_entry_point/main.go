@@ -9,15 +9,18 @@ import (
 	"os"
 	"pdfsplitter_cez_preprod/01_entry_point/functions"
 	"pdfsplitter_cez_preprod/01_entry_point/helpers"
+	"strings"
 	"sync"
 	"time"
 )
 
 const (
-	WeedsAddressString = "10.4.237.28:9333"
-	NatsAddressString  = "10.4.220.151:4222"
+	WeedsAddressString        = "10.4.237.28:9333"
+	NatsAddressString         = "10.4.220.151:4222"
+	WeedsVolumeVisibleAddress = "http://10.4.56.20:8080/"
 )
 
+//ALL LINKS THAT ARE TO BE VISIBLE ARE CHANGED FROM INNER CLUSTER ADDRESS TO OUTER CLUSTER ADDRESS (CONST WeedsVolumeVisibleAddress) SO THAT THEY ARE CLICKABLE
 type JSON struct {
 	Number int    `json:"linknumber"`
 	Href   string `json:"href"`
@@ -26,8 +29,8 @@ type JSON struct {
 
 func setupRoutes() {
 	// functions that handle index and localhost:[port]/process
-	http.HandleFunc("/", CallIndex)
-	http.HandleFunc("/process", Organizer)
+	go http.HandleFunc("/", CallIndex)
+	go http.HandleFunc("/process", Organizer)
 	err := http.ListenAndServe(":8090", nil)
 	if err != nil {
 		fmt.Printf("error with ListenAndServe: %v \n", err)
@@ -205,8 +208,18 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 
 	// iterate over pdf and thumbnail links and add to JSON struct
 	for i, link := range splitLinkSlice {
+
+		tempLinkSlice1 := strings.SplitAfterN(link, "/", 4)
+		newLink := WeedsVolumeVisibleAddress + tempLinkSlice1[len(tempLinkSlice1)-1]
+
+		//strings.ReplaceAll(link, "10.4.129.95", "10.4.56.20")
+
+		tempLinkSlice2 := strings.SplitAfterN(thumbSlice[i], "/", 4)
+		newThumbLink := WeedsVolumeVisibleAddress + tempLinkSlice2[len(tempLinkSlice2)-1]
+		//strings.ReplaceAll(thumbLinks[count], "10.4.129.95", "10.4.56.20")
+
 		//fmt.Println(thumbSlice[i], link)
-		fmt.Println("<a href=" + link + "><img src=" + thumbSlice[i] + "></a>")
+		fmt.Println("<a href=" + newLink + "><img src=" + newThumbLink + "></a>")
 		jsonOutput = append(jsonOutput, JSON{
 			Number: i,
 			Href:   link,
@@ -247,10 +260,17 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Removing file:", err)
 	}
 
-	fmt.Println("link to JSON:", purl)
-	fmt.Println("link to merged file:", mergedFileLink)
+	tempStringSlice := strings.SplitAfterN(purl, "/", 4)
+	newPurl := WeedsVolumeVisibleAddress + tempStringSlice[len(tempStringSlice)-1]
 
-	functions.OutputBodyCreation(w, splitLinkSlice, thumbSlice)
+	fmt.Println("link to JSON:", newPurl)
+
+	tempStringSlice = strings.SplitAfterN(mergedFileLink, "/", 4)
+	newMergedFileLink := WeedsVolumeVisibleAddress + tempStringSlice[len(tempStringSlice)-1]
+
+	fmt.Println("link to merged file:", newMergedFileLink)
+
+	functions.OutputBodyCreation(w, splitLinkSlice, thumbSlice, WeedsVolumeVisibleAddress)
 	elapsed := time.Since(start)
 	fmt.Println("process took:", elapsed)
 

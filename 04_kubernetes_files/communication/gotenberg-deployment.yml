@@ -1,0 +1,22 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gotenberg
+  namespace: jelsik
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      name: gotenberg
+  template:
+    metadata:
+      labels:
+        name: gotenberg
+    spec:
+      containers:
+        - name: application
+          image: thecodingmachine/gotenberg:6
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
