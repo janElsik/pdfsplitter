@@ -16,7 +16,7 @@ import (
 
 const (
 	WeedsAddressString        = "10.4.237.28:9333"
-	NatsAddressString         = "10.4.220.151:4222"
+	NatsAddressString         = "10.4.199.242:4222"
 	WeedsVolumeVisibleAddress = "http://10.4.56.20:8080/"
 )
 
@@ -54,7 +54,6 @@ func CallIndex(w http.ResponseWriter, r *http.Request) {
         action="/process"
         method="post"
 >
-	<label>split your file</label>
     <input type="file" name="myfiles" multiple=multiple/>
     <input type="submit" value="upload" />
 </form>
@@ -72,7 +71,7 @@ func CallIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Println("program started")
+	fmt.Println("program started", "0 miliseconds wait in functions.Convert, 100 miliseconds wait in ConvertToPdf")
 	setupRoutes()
 }
 
@@ -92,7 +91,7 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 
 	// randomly generated string used to create folder with unique name
 	tempFolderName := "/temp/" + helpers.RandomStringGenerator(12)
-	fmt.Println("tempfoldername:", tempFolderName)
+	//	fmt.Println("tempfoldername:", tempFolderName)
 	err := os.Mkdir(tempFolderName, 0777)
 	if err != nil {
 		fmt.Println("error with making dir")
@@ -115,8 +114,8 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 				fmt.Println("opening value:", err)
 			}
 
-			fmt.Println(value.Filename)
-			fmt.Println(tempFolderName + value.Filename)
+			//			fmt.Println(value.Filename)
+			//			fmt.Println(tempFolderName + value.Filename)
 			tempFile, err := ioutil.TempFile(tempFolderName, value.Filename)
 
 			if err != nil {
@@ -173,12 +172,12 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 	wg.Wait()
 
 	// prints name of temp folder
-	fmt.Println("folder:", tempFolderName)
+	//	fmt.Println("folder:", tempFolderName)
 
 	// prints the links to converted documents
-	for _, link := range linkSlice {
+	for _, _ /*link*/ = range linkSlice {
 
-		fmt.Println(link)
+		//		fmt.Println(link)
 
 	}
 
@@ -186,7 +185,7 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 	mergedFileLink := functions.Merge(tempFolderName, linkSlice, WeedsAddressString)
 
 	// prints the link to merged file
-	fmt.Println("link to merged file:", mergedFileLink)
+	//	fmt.Println("link to merged file:", mergedFileLink)
 
 	// this block makes sure that split (functions.Split) is completed before continuing with the
 	// execution of the program (pointer to wg2 variable)
@@ -219,11 +218,11 @@ func Organizer(w http.ResponseWriter, r *http.Request) {
 		//strings.ReplaceAll(thumbLinks[count], "10.4.129.95", "10.4.56.20")
 
 		//fmt.Println(thumbSlice[i], link)
-		fmt.Println("<a href=" + newLink + "><img src=" + newThumbLink + "></a>")
+		//fmt.Println("<a href=" + newLink + "><img src=" + newThumbLink + "></a>")
 		jsonOutput = append(jsonOutput, JSON{
 			Number: i,
-			Href:   link,
-			ImgSrc: thumbSlice[i],
+			Href:   newLink,
+			ImgSrc: newThumbLink,
 		})
 
 	}

@@ -126,7 +126,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup, Wee
 	// return the link for file and link for thumbnail (dont forget to keep order of the files and thumbnails)
 
 	for i, link := range splitLinkList {
-		fmt.Println(i, link)
+		//		fmt.Println(i, link)
 		req := ThumbCreateRequest{
 			Maxnumber:  len(splitLinkList),
 			Id:         i,
@@ -135,7 +135,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup, Wee
 			Identifier: identifier,
 		}
 
-		log.Infof("Sending request to create thumbs with id %d and link %s", i, link)
+		//		log.Infof("Sending request to create thumbs with id %d and link %s", i, link)
 
 		personChanSend <- &req
 	}
@@ -150,7 +150,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup, Wee
 		// check if the incoming message belongs to sent message, if so, print it out and add link to map
 		if deq.Identifier == identifier {
 			linkMap[deq.Id] = deq.ThumbLink
-			fmt.Println(deq.Id)
+			//			fmt.Println(deq.Id)
 		}
 
 		// check if all responses are received, if so, iterate over the map, pull out links from map,
@@ -165,7 +165,7 @@ func Split(tempFolderName string, mergedFileLink string, wg *sync.WaitGroup, Wee
 			sort.Ints(keys)
 
 			for _, k := range keys {
-				fmt.Println(k, linkMap[k])
+				//				fmt.Println(k, linkMap[k])
 				values = append(values, linkMap[k])
 			}
 

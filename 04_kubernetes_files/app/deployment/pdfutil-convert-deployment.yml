@@ -5,7 +5,7 @@ metadata:
   name: pdf-util-convert-testing
   namespace: jelsik
 spec:
-  replicas: 20
+  replicas: 1
   selector:
     matchLabels:
       name: pdf-util-convert-testing
@@ -16,5 +16,5 @@ spec:
     spec:
       containers:
         - name: application
-          image: harbor.trask.cz/pdf_split/testrepo@sha256:55be568fb4ec6a1b359ba0c613bf3ffb7a8694f4ff6eff42751e2c832a7ae090
+          image: harbor.trask.cz/pdf_split/testrepo@sha256:a32eda8683f79d75dd92274ce60222a0d5e756ed6821e82a59b3b560301dd874
           imagePullPolicy: Always

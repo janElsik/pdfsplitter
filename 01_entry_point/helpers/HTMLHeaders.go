@@ -89,7 +89,7 @@ var HtmlHeader = `
     </style>
 
 
-    <title>Pdf Split</title>
+    <title>pdf_util</title>
 </head>
 <body>
 
@@ -187,7 +187,7 @@ var HtmlHeader2 = `
     </style>
 
 
-    <title>Pdf Split</title>
+    <title>pdf_util</title>
 </head>
 <body>
 

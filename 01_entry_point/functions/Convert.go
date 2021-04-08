@@ -96,7 +96,7 @@ func Convert(inputFileSlice []string, tempFolderName string, tempFileName string
 		}
 		// send message to the messaging server
 		req := Request{Id: i, Filename: purl, Identifier: UniqueString, Tempfoldername: tempFolderName, Originalfilename: tempFileName + count + tempFileSuffix}
-		log.Infof("Sending request id: %d with arg: %s", req.Id, req.Filename)
+		//		log.Infof("Sending request id: %d with arg: %s", req.Id, req.Filename)
 		personChanSend <- &req
 
 		i++
@@ -149,6 +149,8 @@ func Convert(inputFileSlice []string, tempFolderName string, tempFileName string
 
 			return values
 		}
+
+		//time.Sleep(time.Millisecond*1000)
 	}
 
 }

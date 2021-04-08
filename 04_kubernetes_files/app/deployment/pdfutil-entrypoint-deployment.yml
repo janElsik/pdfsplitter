@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: application
-          image: harbor.trask.cz/pdf_split/testrepo@sha256:6e07a2c4db9136d8bdd35c613001f70ac63b6836f50a2b89f9913e11321fb6b7
+          image: harbor.trask.cz/pdf_split/testrepo@sha256:5d0693bde8fecd7eddce91ea2e77a3bb53d8785fa649d17a0ed43f3f4a2815c2
           imagePullPolicy: Always
           ports:
             - containerPort: 8090
